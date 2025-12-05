@@ -55,6 +55,7 @@ class Data {
   // NEW: average this dataset with another one (weighted mean)
   Data averageWith(const Data& other, int nCheck) const;  
 
+  double chi2ndfBackground() const;
   
  private:
   Data() {}  // disallow empty data set

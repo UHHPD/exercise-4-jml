@@ -60,6 +60,16 @@ void runTests() {
     std::cout << (test() ? " ok" : " FAILED!") << std::endl;
 }
 
+
+double background(double x) {
+    const double alpha = 0.005;
+    const double beta  = -0.00001;
+    const double gamma = 0.08;
+    const double delta = 0.015;
+
+    return alpha + beta * x + gamma * std::exp(-delta * x);
+}
+
 // int main() {
 //   using namespace std;
 
@@ -137,57 +147,24 @@ int main() {
 
     cout << "------------------------------------------------------" << endl;
 
-
+    // --- weighted average of A,B,C,D in bin 27 (exercise e) ---
+    int nCheck = 2;
     Data avgAB   = experiments[0].averageWith(experiments[1], nCheck);
     Data avgABC  = avgAB.averageWith(experiments[2], nCheck);
     Data avgABCD = avgABC.averageWith(experiments[3], nCheck);
-    
-    std::cout << "\nWeighted Average of A,B,C,D in bin " << bin << ":\n"
-	      << "  y_avg = " << avgABCD.measurement(bin)
-	      << " ± "      << avgABCD.error(bin) << std::endl;
-    
-    
-    // // --- part 1: explicit compatibility check in bin 27 (A vs B) ---
-    // double yA  = experiments[0].measurement(bin);
-    // double eA  = experiments[0].error(bin);
-    // double yB  = experiments[1].measurement(bin);
-    // double eB  = experiments[1].error(bin);
 
-    // double diffAB       = std::fabs(yA - yB);
-    // double sigmaDeltaAB = std::sqrt(eA * eA + eB * eB);
-    // double pullsAB      = diffAB / sigmaDeltaAB;
+    cout << "\nWeighted Average of A,B,C,D in bin " << bin << ":\n"
+         << "  y_avg = " << avgABCD.measurement(bin)
+         << " ± "      << avgABCD.error(bin) << endl;
 
-    // int nCheck = 2;  // nσ threshold to use (e.g. 2σ)
+    cout << "------------------------------------------------------" << endl;
 
-    // cout << "A vs B in bin " << bin << ":\n"
-    //      << "  |Δy| = " << diffAB
-    //      << ", σ_Δy = " << sigmaDeltaAB
-    //      << ", |Δy|/σ_Δy = " << pullsAB << endl;
-
-    // if (diffAB < nCheck * sigmaDeltaAB)
-    //     cout << "  -> compatible within " << nCheck << "σ" << endl;
-    // else
-    //     cout << "  -> NOT compatible within " << nCheck << "σ" << endl;
-
-    // cout << "------------------------------------------------------" << endl;
-
-    // // --- part 2: global compatibility using Data::checkCompatibility ---
-    // int n = 2;  // number of σ for the global check
-
-    // int nBadAB = experiments[0].checkCompatibility(experiments[1], n);
-    // int nBadAC = experiments[0].checkCompatibility(experiments[2], n);
-    // int nBadAD = experiments[0].checkCompatibility(experiments[3], n);
-    // int nBadBC = experiments[1].checkCompatibility(experiments[2], n);
-    // int nBadBD = experiments[1].checkCompatibility(experiments[3], n);
-    // int nBadCD = experiments[2].checkCompatibility(experiments[3], n);
-
-    // cout << "Number of bins differing by more than " << n << "σ:" << endl;
-    // cout << "  A vs B: " << nBadAB << endl;
-    // cout << "  A vs C: " << nBadAC << endl;
-    // cout << "  A vs D: " << nBadAD << endl;
-    // cout << "  B vs C: " << nBadBC << endl;
-    // cout << "  B vs D: " << nBadBD << endl;
-    // cout << "  C vs D: " << nBadCD << endl;
+    // --- Exercise 2: chi2/ndf for background hypothesis ---
+    for (size_t i = 0; i < experiments.size(); ++i) {
+        double chi2ndf = experiments[i].chi2ndfBackground();
+        cout << "Experiment " << char('A' + i)
+             << " chi2/ndf (background) = " << chi2ndf << endl;
+    }
 
     return 0;
 }

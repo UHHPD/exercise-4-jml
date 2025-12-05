@@ -6,6 +6,8 @@
 #include <stdexcept>
 #include <cmath>    // fabs, sqrt
 
+double background(double x); 
+
 using namespace std;
 
 Data::Data(const std::string& filename) {
@@ -127,4 +129,24 @@ Data Data::averageWith(const Data& other, int nCheck) const {
 
   // use the vector-based constructor
   return Data(outBins, outData, outError);
+}
+
+
+double Data::chi2ndfBackground() const {
+  const int N   = static_cast<int>(size());
+  const int ndf = N;               
+
+  double chi2 = 0.0;
+
+  for (int i = 0; i < N; ++i) {
+    double x      = binCenter(i);   
+    double y_meas = measurement(i); 
+    double sigma  = error(i);       
+    double y_pred = background(x);  
+
+    double diff = y_meas - y_pred;
+    chi2 += (diff * diff) / (sigma * sigma);
+  }
+
+  return chi2 / ndf;
 }
