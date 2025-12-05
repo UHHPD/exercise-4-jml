@@ -9,6 +9,18 @@ class Data {
  public:
   Data(const std::string& filename);
 
+  // NEW: construct from vectors (for averaged datasets)
+  Data(const std::vector<double>& bins,
+       const std::vector<double>& data,
+       const std::vector<double>& errors)
+      : m_data(data), m_bins(bins), m_errors(errors) {
+    assertSizes();
+  }
+  Data operator+(const Data& other) const {
+    return averageWith(other, 2); // default 2σ check
+  }
+
+  
   unsigned int size() const { return m_data.size(); }
   // double measurement(int i) const { return m_data[i]; }
   // double binCenter(int i) const { return 0; }
@@ -39,6 +51,10 @@ class Data {
   //   return 0.0;
 
   double error(int i) const { return m_errors[i]; }
+
+  // NEW: average this dataset with another one (weighted mean)
+  Data averageWith(const Data& other, int nCheck) const;  
+
   
  private:
   Data() {}  // disallow empty data set

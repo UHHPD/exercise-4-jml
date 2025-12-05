@@ -2,7 +2,7 @@
 #include <vector>
 #include <functional>
 #include <string>
-
+#include <cmath>
 #include "Data.hh"
 
 // generic function comparing two values of some type T used later for int and
@@ -101,12 +101,9 @@ void runTests() {
 
 //   return 0;
 // }
-#include <iostream>
-#include <vector>
-#include <cmath>    // fabs, sqrt
 
 // runTests() and Data are assumed to be declared above / in headers
-
+int nCheck = 2;
 int main() {
     using namespace std;
 
@@ -140,47 +137,57 @@ int main() {
 
     cout << "------------------------------------------------------" << endl;
 
-    // --- part 1: explicit compatibility check in bin 27 (A vs B) ---
-    double yA  = experiments[0].measurement(bin);
-    double eA  = experiments[0].error(bin);
-    double yB  = experiments[1].measurement(bin);
-    double eB  = experiments[1].error(bin);
 
-    double diffAB       = std::fabs(yA - yB);
-    double sigmaDeltaAB = std::sqrt(eA * eA + eB * eB);
-    double pullsAB      = diffAB / sigmaDeltaAB;
+    Data avgAB   = experiments[0].averageWith(experiments[1], nCheck);
+    Data avgABC  = avgAB.averageWith(experiments[2], nCheck);
+    Data avgABCD = avgABC.averageWith(experiments[3], nCheck);
+    
+    std::cout << "\nWeighted Average of A,B,C,D in bin " << bin << ":\n"
+	      << "  y_avg = " << avgABCD.measurement(bin)
+	      << " ± "      << avgABCD.error(bin) << std::endl;
+    
+    
+    // // --- part 1: explicit compatibility check in bin 27 (A vs B) ---
+    // double yA  = experiments[0].measurement(bin);
+    // double eA  = experiments[0].error(bin);
+    // double yB  = experiments[1].measurement(bin);
+    // double eB  = experiments[1].error(bin);
 
-    int nCheck = 2;  // nσ threshold to use (e.g. 2σ)
+    // double diffAB       = std::fabs(yA - yB);
+    // double sigmaDeltaAB = std::sqrt(eA * eA + eB * eB);
+    // double pullsAB      = diffAB / sigmaDeltaAB;
 
-    cout << "A vs B in bin " << bin << ":\n"
-         << "  |Δy| = " << diffAB
-         << ", σ_Δy = " << sigmaDeltaAB
-         << ", |Δy|/σ_Δy = " << pullsAB << endl;
+    // int nCheck = 2;  // nσ threshold to use (e.g. 2σ)
 
-    if (diffAB < nCheck * sigmaDeltaAB)
-        cout << "  -> compatible within " << nCheck << "σ" << endl;
-    else
-        cout << "  -> NOT compatible within " << nCheck << "σ" << endl;
+    // cout << "A vs B in bin " << bin << ":\n"
+    //      << "  |Δy| = " << diffAB
+    //      << ", σ_Δy = " << sigmaDeltaAB
+    //      << ", |Δy|/σ_Δy = " << pullsAB << endl;
 
-    cout << "------------------------------------------------------" << endl;
+    // if (diffAB < nCheck * sigmaDeltaAB)
+    //     cout << "  -> compatible within " << nCheck << "σ" << endl;
+    // else
+    //     cout << "  -> NOT compatible within " << nCheck << "σ" << endl;
 
-    // --- part 2: global compatibility using Data::checkCompatibility ---
-    int n = 2;  // number of σ for the global check
+    // cout << "------------------------------------------------------" << endl;
 
-    int nBadAB = experiments[0].checkCompatibility(experiments[1], n);
-    int nBadAC = experiments[0].checkCompatibility(experiments[2], n);
-    int nBadAD = experiments[0].checkCompatibility(experiments[3], n);
-    int nBadBC = experiments[1].checkCompatibility(experiments[2], n);
-    int nBadBD = experiments[1].checkCompatibility(experiments[3], n);
-    int nBadCD = experiments[2].checkCompatibility(experiments[3], n);
+    // // --- part 2: global compatibility using Data::checkCompatibility ---
+    // int n = 2;  // number of σ for the global check
 
-    cout << "Number of bins differing by more than " << n << "σ:" << endl;
-    cout << "  A vs B: " << nBadAB << endl;
-    cout << "  A vs C: " << nBadAC << endl;
-    cout << "  A vs D: " << nBadAD << endl;
-    cout << "  B vs C: " << nBadBC << endl;
-    cout << "  B vs D: " << nBadBD << endl;
-    cout << "  C vs D: " << nBadCD << endl;
+    // int nBadAB = experiments[0].checkCompatibility(experiments[1], n);
+    // int nBadAC = experiments[0].checkCompatibility(experiments[2], n);
+    // int nBadAD = experiments[0].checkCompatibility(experiments[3], n);
+    // int nBadBC = experiments[1].checkCompatibility(experiments[2], n);
+    // int nBadBD = experiments[1].checkCompatibility(experiments[3], n);
+    // int nBadCD = experiments[2].checkCompatibility(experiments[3], n);
+
+    // cout << "Number of bins differing by more than " << n << "σ:" << endl;
+    // cout << "  A vs B: " << nBadAB << endl;
+    // cout << "  A vs C: " << nBadAC << endl;
+    // cout << "  A vs D: " << nBadAD << endl;
+    // cout << "  B vs C: " << nBadBC << endl;
+    // cout << "  B vs D: " << nBadBD << endl;
+    // cout << "  C vs D: " << nBadCD << endl;
 
     return 0;
 }
