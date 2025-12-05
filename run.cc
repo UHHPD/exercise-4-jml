@@ -166,5 +166,11 @@ int main() {
              << " chi2/ndf (background) = " << chi2ndf << endl;
     }
 
+    double chi2ndf_comb = avgABCD.chi2ndfBackground();
+    std::cout << "Combined A+B+C+D chi2/ndf (background) = "
+	      << chi2ndf_comb << std::endl;
+
+
+
     return 0;
 }
