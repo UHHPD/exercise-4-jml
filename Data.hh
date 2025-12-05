@@ -33,6 +33,8 @@ class Data {
     return 0.5 * (binLow(i) + binHigh(i));
   }
 
+  int checkCompatibility(const Data& in, int n) const;
+
   // double error(int i) const {
   //   return 0.0;
 
