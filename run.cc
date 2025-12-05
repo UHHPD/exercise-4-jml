@@ -74,6 +74,7 @@ int main() {
        << endl;
   cout << "measurement of experiment A in bin 27: " << datA.measurement(27)
        << endl;
-
+  cout << "uncertainty of experiment A in bin 27: " << datA.error(27)
+       << endl;
   return 0;
 }

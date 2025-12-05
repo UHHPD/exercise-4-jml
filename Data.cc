@@ -32,10 +32,21 @@ Data::Data(const std::string& filename) {
     m_data.push_back(entries);
   }
 
+  // read in data from file: m_size bin errors
+  for (int i = 0; i < size; ++i) {
+    double err;
+    file >> err;
+    m_errors.push_back(err);
+  }
+
+  
   // done! close the file
   file.close();
 
   assertSizes();
 };
 
-void Data::assertSizes() { assert(m_data.size() + 1 == m_bins.size()); }
+void Data::assertSizes() {
+  assert(m_data.size() + 1 == m_bins.size());
+  assert(m_errors.size() == m_data.size());
+}
