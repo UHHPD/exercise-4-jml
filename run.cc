@@ -76,5 +76,24 @@ int main() {
        << endl;
   cout << "uncertainty of experiment A in bin 27: " << datA.error(27)
        << endl;
+
+
+  // Load all four experiments into a vector<Data>
+  vector<Data> experiments;
+  experiments.emplace_back("exp_A");
+  experiments.emplace_back("exp_B");
+  experiments.emplace_back("exp_C");
+  experiments.emplace_back("exp_D");
+    
+  // Print the cross section (measurement) in bin 27 for each experiment
+  for (size_t i = 0; i < experiments.size(); ++i) {
+    cout << "Experiment " << char('A' + i)
+	 << " bin 27 measurement: "
+	 << experiments[i].measurement(27)
+	 << endl;
+  }
+  
+
+
   return 0;
 }
